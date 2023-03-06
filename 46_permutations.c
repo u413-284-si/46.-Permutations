@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 /**
  * Return an array of arrays of size *returnSize.
@@ -8,13 +9,13 @@
 
 void	rec_heap(int **arr, int *line, int *nums, int numsSize, int cols);
 void	fill_line(int **arr, int *line, int *nums, int cols);
-void	swap(int **arr, int *line, int *nums, int index1, int index2, int cols);
+void	swap(int *nums, int index1, int index2);
 
 int**	permute(int* nums, int numsSize, int* returnSize, int** returnColumnSizes)
 {
 	int	**arr;
 	int	i;
-	int	*line;
+	int	line;
 	int	perm;
 	int	cols;
 
@@ -30,58 +31,80 @@ int**	permute(int* nums, int numsSize, int* returnSize, int** returnColumnSizes)
 	while (i < perm)
 		arr[i++] = malloc (**returnColumnSizes * sizeof(int));
 	line = 0;
-	rec_heap(arr, *line, nums, numsSize, **returnColumnSizes);
+	rec_heap(arr, &line, nums, numsSize, **returnColumnSizes);
 	return (arr);
 }
+
+/* This function generates permutations with the Heap algorithm.*/
 
 void	rec_heap(int **arr, int *line, int *nums, int numsSize, int cols)
 {
 	int	i;
 
 	if (numsSize == 1)
+	{
 		fill_line(arr, line, nums, cols);
+		*line += 1;
+	}
 	else
 	{
 		numsSize -= 1;
-		rec_heap(arr, *line, nums, numsSize, cols);
+		rec_heap(arr, line, nums, numsSize, cols);
 		i = 0;
 		while (i < numsSize)
 		{
 			if (numsSize % 2 == 0)
-				swap(arr, line, nums, i, numsSize, cols);
+				swap(nums, i, numsSize);
 			else
-				swap(arr, line, nums, 0, numsSize, cols);
+				swap(nums, 0, numsSize);
 			i++;
 		}
 	}
 }
 
-void	swap(int **arr, int *line, int *nums, int index1, int index2, int cols)
+void	swap(int *nums, int index1, int index2)
 {
-	int	i;
+	int	buf;
 
-	*line++;
-	i = 0;
-	while (i < cols)
-	{
-		if (i == index2)
-			arr[*line][index1] = nums[index2];
-		else if (i == index1)
-			arr[*line][index2] = nums[index1];
-		else
-			arr[*line][i] = nums[i];
-		i++;
-	}
+	buf = nums[index1];
+	nums[index1] = nums[index2];
+	nums[index2] = buf;
 }
 
 void	fill_line(int **arr, int *line, int *nums, int cols)
 {
 	int	i;
 
-	i = 0;
-	while (i < cols)
-	{
+	i = -1;
+	while (++i < cols)
 		arr[*line][i] = nums[i];
-		i++;
+}
+
+int	main(void)
+{
+	int	nums[3];
+	int	**arr;
+	int	rtrns;
+	int	rtrnc;
+	int	*ptr;
+	int	i;
+	int	j;
+
+	nums[0] = 1;
+	nums[1] = 2;
+	nums[2] = 3;
+	rtrnc = 3;
+	rtrns = 6;
+	ptr = &rtrnc;
+	arr = permute(nums, 3, &rtrns, &ptr);
+	i = -1;
+	while (++i < rtrns)
+	{
+		j = -1;
+		while (++j < rtrnc)
+		{
+			printf("%d", arr[i][j]);
+		}
+		printf("\n");
 	}
 }
