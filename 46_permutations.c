@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
+/*
  * Return an array of arrays of size *returnSize.
  * The sizes of the arrays are returned as *returnColumnSizes array.
  * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
- */
+*/
 
 void	rec_heap(int **arr, int *line, int *nums, int numsSize, int cols);
 void	fill_line(int **arr, int *line, int *nums, int cols);
@@ -40,25 +40,23 @@ int**	permute(int* nums, int numsSize, int* returnSize, int** returnColumnSizes)
 void	rec_heap(int **arr, int *line, int *nums, int numsSize, int cols)
 {
 	int	i;
+	int	what;
 
 	if (numsSize == 1)
 	{
 		fill_line(arr, line, nums, cols);
 		*line += 1;
 	}
-	else
+	i = 0;
+	while (i < numsSize)
 	{
-		numsSize -= 1;
-		rec_heap(arr, line, nums, numsSize, cols);
-		i = 0;
-		while (i < numsSize)
-		{
-			if (numsSize % 2 == 0)
-				swap(nums, i, numsSize);
-			else
-				swap(nums, 0, numsSize);
-			i++;
-		}
+		what = numsSize - 1;
+		rec_heap(arr, line, nums, what, cols);
+		if (numsSize % 2 == 0)
+			swap(nums, i, what);
+		else
+			swap(nums, 0, what);
+		i++;
 	}
 }
 
@@ -90,7 +88,7 @@ int	main(void)
 	int	i;
 	int	j;
 
-	nums[0] = 1;
+	nums[0] = 4;
 	nums[1] = 2;
 	nums[2] = 3;
 	rtrnc = 3;
@@ -102,9 +100,10 @@ int	main(void)
 	{
 		j = -1;
 		while (++j < rtrnc)
-		{
 			printf("%d", arr[i][j]);
-		}
 		printf("\n");
+		free(arr[i]);
 	}
+	free(arr);
+	return (0);
 }
